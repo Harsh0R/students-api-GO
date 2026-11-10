@@ -1,2 +1,2 @@
 run:
-	go run ./cmd/students-api/main.go
+	@go run ./cmd/students-api/main.go -config ./config/local.yaml
