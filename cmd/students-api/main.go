@@ -13,6 +13,7 @@ import (
 
 	"github.com/harsh0r/student-api/internal/config"
 	"github.com/harsh0r/student-api/internal/http/handlers/student"
+	"github.com/harsh0r/student-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -21,12 +22,19 @@ func main() {
 	cfg := config.MustLoad()
 
 	// database setup
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("Storage Init..", slog.String("env", cfg.Env), slog.String("version", "0.1.0"))
+
 	// setup router
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Okay"))
 	})
-	router.HandleFunc("POST /api/student", student.New())
+	router.HandleFunc("POST /api/student", student.New(storage))
 	// setup server
 	server := http.Server{Addr: cfg.Address, Handler: router}
 	fmt.Printf("server started at %s.", cfg.Address)
