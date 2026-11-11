@@ -35,6 +35,8 @@ func main() {
 		w.Write([]byte("Okay"))
 	})
 	router.HandleFunc("POST /api/student", student.New(storage))
+	router.HandleFunc("GET /api/student/{id}", student.GetByID(storage))
+	router.HandleFunc("GET /api/student", student.GetList(storage))
 	// setup server
 	server := http.Server{Addr: cfg.Address, Handler: router}
 	fmt.Printf("server started at %s.", cfg.Address)
